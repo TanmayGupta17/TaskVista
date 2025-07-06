@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useCallback,
+} from "react";
 import { api } from "@/lib/api";
 
 const AuthContext = createContext();
@@ -41,17 +47,7 @@ export const AuthProvider = ({ children }) => {
     loading: true,
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      fetchUser();
-    } else {
-      dispatch({ type: "SET_LOADING", payload: false });
-    }
-  }, []);
-
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       const res = await fetch(
         (
@@ -73,7 +69,17 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       logout();
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      fetchUser();
+    } else {
+      dispatch({ type: "SET_LOADING", payload: false });
+    }
+  }, [fetchUser]);
 
   const login = async (email, password) => {
     try {

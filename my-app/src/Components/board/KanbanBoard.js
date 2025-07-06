@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useSocket } from "@/contexts/SocketContext";
 import { api } from "@/lib/api";
@@ -20,16 +20,10 @@ const KanbanBoard = () => {
     { id: "Done", title: "Done", color: "#27ae60" },
   ];
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const response = await fetch(
-        `${
-          process.env.BACKEND_URL || "http://localhost:8000"
-        }/api/tasks`,
+        `${process.env.BACKEND_URL || "http://localhost:8000"}/api/tasks`,
         {
           method: "GET",
           headers: {
@@ -45,7 +39,11 @@ const KanbanBoard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setTasks]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const handleDragEnd = (result) => {
     const { destination, source, draggableId } = result;

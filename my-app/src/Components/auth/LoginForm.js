@@ -109,7 +109,7 @@ const LoginForm = () => {
         </button>
 
         <p className={styles.switchText}>
-          Don't have an account?{" "}
+          {"Don't have an account?"}{" "}
           <a href="/auth/register" className={styles.link}>
             Register here
           </a>
