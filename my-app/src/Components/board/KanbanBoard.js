@@ -28,7 +28,7 @@ const KanbanBoard = () => {
     try {
       const response = await fetch(
         `${
-          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"
+          process.env.BACKEND_URL || "http://localhost:8000"
         }/api/tasks`,
         {
           method: "GET",
